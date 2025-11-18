@@ -39,7 +39,7 @@ jobs:
         run: |
           echo version $docker_image_version
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-          IMAGE_ID=ghcr.io/eoepca/$docker_image_name/$docker_image_version
+          IMAGE_ID=ghcr.io/$docker_image_name/$docker_image_version
           docker build --file Dockerfile --tag $IMAGE_ID .
           docker push $IMAGE_ID
 
