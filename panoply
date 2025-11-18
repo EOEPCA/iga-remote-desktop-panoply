@@ -1,0 +1,3 @@
+#!/bin/sh
+
+java -Xms512m -Xmx2000m -jar /opt/panoply/jars/Panoply.jar "$@"

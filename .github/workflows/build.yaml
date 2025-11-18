@@ -1,0 +1,46 @@
+name: build
+on:
+  push:
+    branches:
+    - develop
+    - main
+
+jobs:
+  
+  container-build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+  
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Read docker name
+        id: yaml-docker-name
+        uses: jbutcher5/read-yaml@main
+        with:
+          file: 'build.yml'
+          key-path: '["docker_image_name"]'
+
+      - name: Read docker version
+        id: yaml-docker-version
+        uses: jbutcher5/read-yaml@main
+        with:
+          file: 'build.yml'
+          key-path: '["docker_image_version"]'
+
+      - name: build-container
+        env:
+          GITHUB_BRANCH: ${{ github.ref }}
+          docker_image_name: ${{ steps.yaml-docker-name.outputs.data }}
+          docker_image_version: ${{ steps.yaml-docker-version.outputs.data }}
+
+        run: |
+          echo version $docker_image_version
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          IMAGE_ID=ghcr.io/eoepca/$docker_image_name/$docker_image_version
+          docker build --file Dockerfile --tag $IMAGE_ID .
+          docker push $IMAGE_ID
+
+ 

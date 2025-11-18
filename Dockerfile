@@ -1,0 +1,25 @@
+FROM eoepca/iga-remote-desktop:1.1.2
+
+USER root
+
+ADD panoply.desktop /etc/xdg/autostart/panoply.desktop
+
+### Install OpenJDK for Panoply ###
+RUN apt-get update && \
+    apt-get install -y openjdk-17-jre unzip && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+### Install Panoply 5.8.0 ###
+RUN curl -L -o /tmp/panoply.zip \
+      https://www.giss.nasa.gov/tools/panoply/download/PanoplyJ-5.8.0.zip && \
+    unzip /tmp/panoply.zip -d /opt && \
+    mv /opt/Panoply*/ /opt/panoply && \
+    rm /tmp/panoply.zip
+
+COPY panoply /usr/local/bin/panoply
+
+RUN chmod +x /usr/local/bin/panoply
+
+RUN chown -R $NB_UID:$NB_GID $HOME
+
+USER $NB_USER
