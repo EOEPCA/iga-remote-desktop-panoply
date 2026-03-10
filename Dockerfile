@@ -1,4 +1,4 @@
-FROM ghcr.io/eoepca/iga-remote-desktop:1.2.0
+FROM ghcr.io/eoepca/iga-remote-desktop:latest-dev
 
 USER root
 
@@ -10,7 +10,7 @@ RUN apt-get update && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ### Install Panoply ###
-ARG PANOPLY_VERSION=5.8.1
+ARG PANOPLY_VERSION=5.9.1
 RUN curl -L -o /tmp/panoply.zip \
       https://www.giss.nasa.gov/tools/panoply/download/PanoplyJ-${PANOPLY_VERSION}.zip && \
     unzip /tmp/panoply.zip -d /opt && \
